@@ -54,6 +54,17 @@ jobs:
           TAG=$(git rev-parse --short HEAD)
           echo "TAG=$TAG" >> $GITHUB_ENV
 
+      - name: Create a secret with AWS credentials
+        run: |
+          kubectl get namespace bookstore-prod || { \
+          kubectl create namespace bookstore-prod
+          kubectl create secret generic aws-creds \
+          -n bookstore-prod \
+          --from-literal=AWS_ACCESS_KEY_ID='${{ secrets.AWS_ACCESS_KEY_ID }}' \
+          --from-literal=AWS_SECRET_ACCESS_KEY='${{ secrets.AWS_SECRET_ACCESS_KEY }}' \
+          --from-literal=AWS_DEFAULT_REGION='${{ vars.AWS_REGION }}'
+          }
+
       - name: Deploy with Helm
         run: >-
           helm upgrade api ./helm 
