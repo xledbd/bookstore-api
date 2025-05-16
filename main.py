@@ -6,8 +6,10 @@ import boto3
 from boto3.dynamodb.conditions import Key, Attr
 from decimal import Decimal
 import json
+from metrics import setup_metrics
 
 app = Flask(__name__)
+setup_metrics(app)
 CORS(app)
 
 # Configure DynamoDB connection
